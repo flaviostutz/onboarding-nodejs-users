@@ -7,6 +7,7 @@ const app = express();
 
 app.use(bodyParser.json());
 
+// Retrieves all the users
 app.get('/users', (req, res) => {
     const jsonData = require('./user.json');
     res.status(200).json({
@@ -15,25 +16,26 @@ app.get('/users', (req, res) => {
     });
 });
 
-// get one specific user
+// Get one specific user
 app.get("/users/:Id", (req, res) => {
     myUtilityFunctions.getUserById(req, res);
 });
 
+// Post a user and create the file for it if needed
 app.post("/users", (req, res) => {
-    if (myUtilityFunctions.validationUser(req, res) != undefined) {
-        return myUtilityFunctions.validationUser(req, res);
+    if (myUtilityFunctions.validationUserPost(req, res) == undefined) {
+        return myUtilityFunctions.addUserPost(req, res);
     } else {
-        return myUtilityFunctions.addUser(req, res);
+        return myUtilityFunctions.validationUserPost(req, res);
     }
 });
 
-//now i can update any parameter of users, ot a total user if i change a little bit at line 58
+// Update any variable of any user
 app.put("/users/:Id", (req, res) => {
     myUtilityFunctions.putUserbyId(req, res);
 });
 
-// delete a user named by Id
+// Delete a user
 app.delete("/users/:Id", (req, res) => {
     myUtilityFunctions.deleteUserById(req, res);
 });
