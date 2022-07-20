@@ -1,17 +1,17 @@
 [
-  {
-    "name": "Niels",
-    "height": 200,
-    "hair": "Black"
-  },
-  {
-    "name": "Flavio",
-    "height": 200,
-    "hair": "Black"
-  },
-  {
-    "name": "Usman",
-    "height": 180,
-    "hair": "Black"
-  }
-]
+    {
+      "name": "Flavio",
+      "height": 180,
+      "hair": "Black"
+    },
+    {
+      "name": "Usman",
+      "height": 180,
+      "hair": "yello"
+    },
+    {
+      "name": "Gangstert",
+      "height": 180,
+      "hair": "yello"
+    }
+  ]
