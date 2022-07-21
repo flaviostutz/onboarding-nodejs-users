@@ -32,9 +32,6 @@ const addUserPost = (userPostData) => {
         fileData.push(userPostData)
         fs.writeFileSync('user.json', JSON.stringify(fileData, null, 2));
     }
-    res.status(201).json({
-        message: `Successfully created the user ${userPostData.name}`,
-    })
 }
 
 const putUserbyId = (userPutData, parameterId) => {
@@ -78,7 +75,6 @@ const getUserById = (requestedId) => {
     }
     else {
         return false;
-
     }
 };
 
