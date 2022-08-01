@@ -1,10 +1,3 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const { exit } = require('process');
-const app = express();
-
-app.use(bodyParser.json());
-
 // I declare these lines so they are global here so i dont have to declare them in every function.
 // The append part does not work anymore because when reading the file user.json when not available the app crashes, i dont have a solution for this yet.
 
@@ -28,9 +21,11 @@ const validationUserPost = (userPostData) => {
 const addUserPost = (userPostData) => {
     if (fs.existsSync(path) != true) {
         fs.appendFileSync('user.json', JSON.stringify([userPostData], null, 2));
+        return false;
     } else {
         fileData.push(userPostData)
         fs.writeFileSync('user.json', JSON.stringify(fileData, null, 2));
+        return true;
     }
 }
 

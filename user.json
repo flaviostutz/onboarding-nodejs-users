@@ -1,11 +1,16 @@
 [
   {
-    "name": "Flavio",
-    "height": 205,
+    "name": "Usman",
+    "height": 165,
     "hair": "Black"
   },
   {
-    "name": "Usman",
+    "name": "Flavio",
+    "height": 145,
+    "hair": "Black"
+  },
+  {
+    "name": "Henk",
     "height": 180,
     "hair": "yellow"
   }
