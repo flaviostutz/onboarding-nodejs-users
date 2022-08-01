@@ -40,7 +40,7 @@ expressServer.post("/users", (req, res) => {
         });
     } else {
         res.status(403).json({
-            message: 'The user cannot be validated!'
+            message: `The user ${req.params.Id} cannot be validated!`
         })
     }
 });
@@ -48,7 +48,13 @@ expressServer.post("/users", (req, res) => {
 // The first if add a user and creates the file if the user.json file does not exist yet.
 expressServer.put("/users/:Id", (req, res) => {
     const putValidation = putUserbyId(req.body, req.params.Id);
-    if (putValidation) {
+    const putValidationAsPost = (validationUserPost(req.body));
+    if(putValidationAsPost !== true) {
+        res.status(404).json({
+            message: `The user ${req.params.Id} cannot be validated!`,
+        })
+    }
+    else if (putValidation) {
         res.status(200).json({
             message: `Successfully changed the user ${req.body.name}!`,
         })

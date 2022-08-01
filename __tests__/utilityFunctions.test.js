@@ -15,24 +15,27 @@ const randomUserNameFromFile = randomWholeUserFromFile.name;
 
 //this test is not perfect because i still have this issue with the append part mentioned in the utilityFunctions file.
 test('testPostAddUser', () => {
-  expect(addUserPost({
+  const callAddUser = addUserPost({
     "name": "unitTestUser",
     "height": 190,
     "hair": "Black"
-  })).toBe(true);
+  });
+  expect(callAddUser).toBe(true);
 });
 
-// this test is not perfect because i still have this issue with the append part mentioned in the utilityFunctions file.
+//this test is not perfect because i still have this issue with the append part mentioned in the utilityFunctions file.
 test('testPutUserById', () => {
-  expect(putUserbyId({
+  const putUser = putUserbyId({
     "name": "unitTestUser",
     "height": 190,
     "hair": "Black"
-  }, "unitTestUser")).toBe(true);
+  }, "unitTestUser")
+  expect(putUser).toBe(true);
 });
 
 test('testGetUserById', () => {
-  expect(getUserById("unitTestUser")).toStrictEqual({
+  const getUser = getUserById("unitTestUser");
+  expect(getUser).toStrictEqual({
     "name": "unitTestUser",
     "height": 190,
     "hair": "Black"
@@ -40,34 +43,39 @@ test('testGetUserById', () => {
 });
 
 test('testGetUserById', () => {
-  expect(getUserById("MrUnknown")).toBe(false);
+  const getUnknownUser = getUserById("MrUnknown");
+  expect(getUnknownUser).toBe(false);
 });
 
 test('testPostValidationUser', () => {
-  expect(validationUserPost({
+  const validUserValidation = validationUserPost({
     "name": "unitTestUser",
     "height": 190,
     "hair": "Black"
-  })).toBe(true);
+  });
+  expect(validUserValidation).toBe(true);
 });
 
 test('testPostValidationUser', () => {
-  expect(validationUserPost({
+  const unValidValidation = validationUserPost({
     "name": "ToShortUser",
     "height": 48,
     "hair": "Bold"
-  })).toBe(false);
+  });
+  expect(unValidValidation).toBe(false);
 });
 
 test('testDeleteUserById', () => {
-  expect(deleteUserById("MrUnknown")).toBe(false);
+  const delUnknownUser = deleteUserById("MrUnknown");
+  expect(delUnknownUser).toBe(false);
 });
 
 test('testDeleteUserById', () => {
-  expect(deleteUserById("unitTestUser")).toBe(true);
+  const knownUserById = deleteUserById("unitTestUser");
+  expect(knownUserById).toBe(true);
 });
 
-// this hardcoded check is something i don't like.
+//this hardcoded check is something i don't like.
 test('testReadFromUserFile', () => {
   expect(readFromUserFile()).toStrictEqual([{ "hair": "Black", "height": 165, "name": "Usman" }, { "hair": "Black", "height": 145, "name": "Flavio" }, { "hair": "yellow", "height": 180, "name": "Henk" }]);
 });
