@@ -50,7 +50,7 @@ expressServer.put("/users/:Id", (req, res) => {
     const putValidation = putUserbyId(req.body, req.params.Id);
     const putValidationAsPost = (validationUserPost(req.body));
     if(putValidationAsPost !== true) {
-        res.status(404).json({
+        res.status(422).json({
             message: `The user ${req.params.Id} cannot be validated!`,
         })
     }
