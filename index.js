@@ -19,25 +19,29 @@ app.get("/person/:name", (req, res) => {
 let persons = [];
 
 (() => {
-  fs.readFile('./persons.txt', (err, data) => {
-    persons = JSON.parse(data)
-    if(err) {
-      console.log('Cannot read file')
-      console.log(err)
+  fs.readFile("./persons.txt", (err, data) => {
+    if (data !== undefined) {
+      persons = JSON.parse(data);
+      if (err) {
+        console.log("Cannot read file");
+        console.log(err);
+      }
+    } else {
+      console.log(`persons.txt is empty`);
     }
-  })
-})()
+  });
+})();
 
-function setPersons() {
-  fs.writeFile('./persons.txt', JSON.stringify(persons), 'utf-8', (err) => {
-    console.log(err)
-    })
+function savePersons() {
+  fs.writeFile("./persons.txt", JSON.stringify(persons), "utf-8", (err) => {
+    console.log(err);
+  });
 }
 
-app.post("/createperson", (req, res) => {
+app.post("/persons", (req, res) => {
   const person = req.body;
   const isPersonEmpty = person.length === 0;
-  const regex = /^[A-Za-z]+$/
+  const regex = /^[A-Za-z]+$/;
   personNameLength = person.name.length;
   personHeight = person.height;
 
@@ -62,15 +66,15 @@ app.post("/createperson", (req, res) => {
       res.end();
       return;
     }
-    setPersons();
     persons.push(person);
     res
       .status(200)
       .send(`person <strong>${person.name}</strong> was created successfully`);
+    savePersons();
   } else if (!isPersonEmpty) {
-    res.status(400).send(`your name '${person.name}' should only have letters`)
+    res.status(400).send(`your name '${person.name}' should only have letters`);
   } else {
-    res.status(400)
+    res.status(400);
   }
   res.end();
 });
@@ -78,7 +82,7 @@ app.post("/createperson", (req, res) => {
 app.get("/persons", (req, res) => {
   const isPersonsEmpty = persons.length === 0;
   if (isPersonsEmpty) {
-    res.status(404).send(`<h1>404</h1><p>there's <strong>no one</strong>`);
+    res.status(200).send(`<h1>404</h1><p>there's <strong>no one</strong>`);
   } else {
     res.status(200).send(persons);
   }
@@ -87,10 +91,11 @@ app.get("/persons", (req, res) => {
 app.get("/persons/:name", (req, res) => {
   const nameReq = req.params.name;
   const finded = persons.find((person) => person.name === nameReq);
+  console.log(finded)
 
   let responseByName;
 
-  if (!!finded) {
+  if (finded) {
     responseByName = persons.filter((person) => person.name === nameReq);
     res.status(200).send(responseByName);
   } else {
@@ -103,15 +108,15 @@ app.get("/persons/:name", (req, res) => {
   }
 });
 
-app.delete("/persons/delete", (req, res) => {
-  const nameReq = req.query.name || "";
+app.delete("/persons/:name", (req, res) => {
+  const nameReq = req.params.name || "";
   const deletedPerson = persons.filter((person) => person.name === nameReq);
   const filteredPersons = persons.filter((person) => person.name !== nameReq);
 
   if (deletedPerson.length > 0) {
     res.status(200).send(`user: ${nameReq} was deleted`);
-    setPersons();
     persons = filteredPersons;
+    savePersons();
     return;
   }
 
@@ -119,41 +124,41 @@ app.delete("/persons/delete", (req, res) => {
     res.status(400).send(`${nameReq} person not found`);
     return;
   }
-  
+
   res.status(400).send(`<h1>400</h1><br /> <p>Invalid Request</p>`);
 });
 
 app.patch("/persons/:name", (req, res) => {
-    const { query } =  req;
+  const { query } = req;
   const nameReq = req.params.name;
-    function personExist() {
-        let namef = persons.filter(person => person.name === nameReq)
-        if (namef.length !== 0) {
-            return namef[0].name
-        } else {
-            return false
-        }
-    }
-    exist = personExist()
-
-    if(exist && query) {
-        let update = persons.map(person => {
-          if (person.name === nameReq){
-              let updatedPerson = {...person, ...query}
-              return updatedPerson
-          }else {
-              return person
-          }
-        })
-        persons = update
-        setPersons()
-        res.status(200).send(`${nameReq} updated successfully`)
-    } else if (exist) {
-        res.status(400).send(`bad <strong>query</strong> request`)
+  function personExist() {
+    let namef = persons.filter((person) => person.name === nameReq);
+    if (namef.length !== 0) {
+      return namef[0].name;
     } else {
-        res.status(400).send(`user not find`)
+      return false;
     }
-    res.end()
+  }
+  exist = personExist();
+
+  if (exist && query) {
+    let update = persons.map((person) => {
+      if (person.name === nameReq) {
+        let updatedPerson = { ...person, ...query };
+        return updatedPerson;
+      } else {
+        return person;
+      }
+    });
+    persons = update;
+    res.status(200).send(`${nameReq} updated successfully`);
+  } else if (exist) {
+    res.status(400).send(`bad <strong>query</strong> request`);
+  } else {
+    res.status(400).send(`${nameReq} was not find`);
+  }
+  savePersons();
+  res.end();
 });
 
 app.listen(8080, () => console.log("listening on port 8080"));
