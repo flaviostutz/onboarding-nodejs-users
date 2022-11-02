@@ -1,1 +1,1 @@
-[{"name":"Andrew","height":"88","hair":"black","happiness":"10"},{"name":"Marta","height":"88","hair":"black"},{"name":"Marta","height":"88","hair":"black"}]
+[{"name":"Marta","height":"88","hair":"black"},{"name":"Marta","height":"88","hair":"black"}]

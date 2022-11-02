@@ -36,6 +36,8 @@ function savePersons() {
   fs.writeFile("./persons.txt", JSON.stringify(persons), "utf-8", (err) => {
     console.log(err);
   });
+
+  //todo -> check if has any errors while saving and return so i can show the error to the user
 }
 
 app.post("/persons", (req, res) => {
@@ -67,10 +69,10 @@ app.post("/persons", (req, res) => {
       return;
     }
     persons.push(person);
+    savePersons();
     res
       .status(200)
       .send(`person <strong>${person.name}</strong> was created successfully`);
-    savePersons();
   } else if (!isPersonEmpty) {
     res.status(400).send(`your name '${person.name}' should only have letters`);
   } else {
@@ -82,7 +84,7 @@ app.post("/persons", (req, res) => {
 app.get("/persons", (req, res) => {
   const isPersonsEmpty = persons.length === 0;
   if (isPersonsEmpty) {
-    res.status(200).send(`<h1>404</h1><p>there's <strong>no one</strong>`);
+    res.status(404).send(`<h1>404</h1><p>there's <strong>no one</strong>`);
   } else {
     res.status(200).send(persons);
   }
@@ -100,9 +102,9 @@ app.get("/persons/:name", (req, res) => {
     res.status(200).send(responseByName);
   } else {
     res
-      .status(404)
+      .status(204)
       .send(
-        `<h1>404</h1><p>the person: <strong>${nameReq}</strong>, was not found</p>`
+        `<h1>204</h1><p>the person: <strong>${nameReq}</strong>, was not found</p>`
       );
     return;
   }
@@ -114,21 +116,21 @@ app.delete("/persons/:name", (req, res) => {
   const filteredPersons = persons.filter((person) => person.name !== nameReq);
 
   if (deletedPerson.length > 0) {
-    res.status(200).send(`user: ${nameReq} was deleted`);
+    res.status(202).send(`user: ${nameReq} was deleted`);
     persons = filteredPersons;
     savePersons();
     return;
   }
 
   if (deletedPerson.length <= 0) {
-    res.status(400).send(`${nameReq} person not found`);
+    res.status(204).send(`${nameReq} person not found`);
     return;
   }
 
-  res.status(400).send(`<h1>400</h1><br /> <p>Invalid Request</p>`);
+  res.status(400).send(`<h1>400</h1><br /> <p>Bad request</p>`);
 });
 
-app.patch("/persons/:name", (req, res) => {
+app.put("/persons/:name", (req, res) => {
   const { query } = req;
   const nameReq = req.params.name;
   function personExist() {
@@ -151,11 +153,11 @@ app.patch("/persons/:name", (req, res) => {
       }
     });
     persons = update;
-    res.status(200).send(`${nameReq} updated successfully`);
+    res.status(202).send(`${nameReq} updated successfully`);
   } else if (exist) {
     res.status(400).send(`bad <strong>query</strong> request`);
   } else {
-    res.status(400).send(`${nameReq} was not find`);
+    res.status(404).send(`${nameReq} was not find`);
   }
   savePersons();
   res.end();
