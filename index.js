@@ -1,8 +1,10 @@
 const express = require("express");
-const fs = require("fs");
 const app = express();
+const updatePersons = require("./updatePersons");
 
 app.use(express.json());
+
+let persons = updatePersons.syncStart()
 
 app.get("/person/:name", (req, res) => {
   const idadeRandom = Math.floor(Math.random() * (80 - 18) + 18);
@@ -15,30 +17,6 @@ app.get("/person/:name", (req, res) => {
     }`);
   res.send(jsonResponse);
 });
-
-let persons = [];
-
-(() => {
-  fs.readFile("./persons.txt", (err, data) => {
-    if (data !== undefined) {
-      persons = JSON.parse(data);
-      if (err) {
-        console.log("Cannot read file");
-        console.log(err);
-      }
-    } else {
-      console.log(`persons.txt is empty`);
-    }
-  });
-})();
-
-function savePersons() {
-  fs.writeFile("./persons.txt", JSON.stringify(persons), "utf-8", (err) => {
-    console.log(err);
-  });
-
-  //todo -> check if has any errors while saving and return so i can show the error to the user
-}
 
 app.post("/persons", (req, res) => {
   const person = req.body;
@@ -69,7 +47,7 @@ app.post("/persons", (req, res) => {
       return;
     }
     persons.push(person);
-    savePersons();
+    updatePersons.savePersons(persons);
     res
       .status(200)
       .send(`person <strong>${person.name}</strong> was created successfully`);
@@ -93,7 +71,7 @@ app.get("/persons", (req, res) => {
 app.get("/persons/:name", (req, res) => {
   const nameReq = req.params.name;
   const finded = persons.find((person) => person.name === nameReq);
-  console.log(finded)
+  console.log(finded);
 
   let responseByName;
 
@@ -118,7 +96,7 @@ app.delete("/persons/:name", (req, res) => {
   if (deletedPerson.length > 0) {
     res.status(202).send(`user: ${nameReq} was deleted`);
     persons = filteredPersons;
-    savePersons();
+    updatePersons.savePersons(persons);
     return;
   }
 
@@ -159,7 +137,7 @@ app.put("/persons/:name", (req, res) => {
   } else {
     res.status(404).send(`${nameReq} was not find`);
   }
-  savePersons();
+  updatePersons.savePersons(persons);
   res.end();
 });
 
