@@ -1,12 +1,12 @@
-import supertest from 'supertest'
-import app from './app'
+import request from 'supertest'
+import app from './index.js'
 
 describe("POST to /persons", () => {
 
-    describe("given username and height", async () => {
-        describe("Test if the username or height is valid", async () => {
+    describe("given username and height", () => {
+        test("Test if the username or height is valid", async () => {
             const response = await request(app).post("/persons").send({
-                username: "Mario",
+                name: "Mario",
                 height: "180"
             })
             expect(response.statusCode).toBe(200)
