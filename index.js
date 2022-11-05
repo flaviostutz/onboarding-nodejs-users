@@ -1,29 +1,20 @@
-const express = require("express");
+// const express = require("express");
+// const updatePersons = require("./updatePersons");
+import express from "express";
+import { savePersons, syncStart } from "./updatePersons.js";
 const app = express();
-const updatePersons = require("./updatePersons");
 
 app.use(express.json());
 
-let persons = updatePersons.syncStart()
-
-app.get("/person/:name", (req, res) => {
-  const idadeRandom = Math.floor(Math.random() * (80 - 18) + 18);
-
-  const jsonResponse = JSON.parse(`{
-        "person": {
-            "name": "${req.params.name}",
-            "idade": "${idadeRandom}"
-        } 
-    }`);
-  res.send(jsonResponse);
-});
+// let persons = updatePersons.syncStart();
+let persons = syncStart();
 
 app.post("/persons", (req, res) => {
   const person = req.body;
   const isPersonEmpty = person.length === 0;
   const regex = /^[A-Za-z]+$/;
-  personNameLength = person.name.length;
-  personHeight = person.height;
+  const personNameLength = person.name.length;
+  const personHeight = person.height;
 
   if (!isPersonEmpty && regex.test(person.name)) {
     if (personNameLength < 4) {
@@ -47,7 +38,7 @@ app.post("/persons", (req, res) => {
       return;
     }
     persons.push(person);
-    updatePersons.savePersons(persons);
+    savePersons(persons);
     res
       .status(200)
       .send(`person <strong>${person.name}</strong> was created successfully`);
@@ -96,7 +87,7 @@ app.delete("/persons/:name", (req, res) => {
   if (deletedPerson.length > 0) {
     res.status(202).send(`user: ${nameReq} was deleted`);
     persons = filteredPersons;
-    updatePersons.savePersons(persons);
+    savePersons(persons);
     return;
   }
 
@@ -119,7 +110,7 @@ app.put("/persons/:name", (req, res) => {
       return false;
     }
   }
-  exist = personExist();
+  let exist = personExist();
 
   if (exist && query) {
     let update = persons.map((person) => {
@@ -137,8 +128,10 @@ app.put("/persons/:name", (req, res) => {
   } else {
     res.status(404).send(`${nameReq} was not find`);
   }
-  updatePersons.savePersons(persons);
+  savePersons(persons);
   res.end();
 });
 
 app.listen(8080, () => console.log("listening on port 8080"));
+
+export default app;

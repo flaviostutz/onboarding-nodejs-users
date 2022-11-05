@@ -1,6 +1,6 @@
-const fs = require("fs");
+import fs from 'fs';
 
-exports.savePersons = function (persons) {
+export function savePersons(persons) {
   fs.writeFile("./persons.json", JSON.stringify(persons), "utf-8", (err) => {
     console.log(err);
   });
@@ -8,7 +8,7 @@ exports.savePersons = function (persons) {
   //todo -> check if has any errors while saving and return so i can show the error to the user
 };
 
-exports.syncStart = function () {
+export function syncStart() {
 // function syncStart() {
   let persons = [];
   try {
