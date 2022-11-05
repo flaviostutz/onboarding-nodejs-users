@@ -11,13 +11,6 @@ import app from "./index.js";
  *   full command: "NODE_OPTIONS=--experimental-vm-modules npx jest --runInBand"
  */
 
-async function createTestUser() {
-  request(app).post("/persons").send({
-    name: "userTest",
-    height: 180,
-  });
-}
-
 describe("GET to /persons", () => {
   test("/persons returns anything", async () => {
     const response = await request(app).get("/persons");
