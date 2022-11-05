@@ -7,8 +7,29 @@ import app from "./index.js";
  *   userTest all the non-POST request will fail
  */
 
+describe("GET to /persons", () => {
+    test("/persons returns something", async () => {
+        const response = await request(app).get("/persons")
+        expect(response.text).toEqual(expect.stringContaining(""))
+    })
+
+    // test("/persons returns 404 if no one to list", async () => {
+    //     isPersonsEmpty = true
+    //     const response = await request(app).get("/persons")
+    //     expect(response.statusCode).toBe(404)
+    // })
+})
+
 describe("POST to /persons", () => {
   describe("given username and height", () => {
+    test("Reject if name is empty", async () => {
+      const response = await request(app).post("/persons").send({
+        name: "",
+        height: "180",
+      });
+      expect(response.statusCode).toBe(400);
+    });
+
     test("Test if the username or height is valid", async () => {
       const response = await request(app).post("/persons").send({
         name: "testUser",
@@ -33,22 +54,35 @@ describe("POST to /persons", () => {
       expect(response.statusCode).toBe(400);
     });
 
-    test("Check if height is over 50 cm", async () => {
+    test("Reject if height is less than 50 cm", async () => {
       const response = await request(app).post("/persons").send({
         name: "Mario",
         height: "49",
       });
       expect(response.statusCode).toBe(400);
     });
-    test("Check if height is less than 250 cm", async () => {
+    
+    test("Reject if height is over than 250 cm", async () => {
       const response = await request(app).post("/persons").send({
-        name: "Mar",
+        name: "Mario",
         height: "251",
       });
       expect(response.statusCode).toBe(400);
+    // expect(response.body).toEqual(expect.stringContaining("maximum"))
     });
   });
 });
+
+describe("GET to /persons/:user",() => {
+    test("Return user data if user exist", async () => {
+        const response = await request(app).get("/persons/userTest")
+        expect(response.statusCode).toBe(200)
+    })
+    test("Return not found if user doesn't exist", async () => {
+        const response = await request(app).get("/persons/nonExistentUser")
+        expect(response.statusCode).toBe(204)
+    })
+})
 
 describe("PUT to /persons", () => {
   test("Updating a inexistent user is possible", async () => {

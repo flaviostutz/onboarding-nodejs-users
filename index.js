@@ -44,9 +44,7 @@ app.post("/persons", (req, res) => {
       .send(`person <strong>${person.name}</strong> was created successfully`);
   } else if (!isPersonEmpty) {
     res.status(400).send(`your name '${person.name}' should only have letters`);
-  } else {
-    res.status(400);
-  }
+  } 
   res.end();
 });
 
@@ -122,15 +120,9 @@ app.delete("/persons/:name", (req, res) => {
     res.status(202).send(`user: ${nameReq} was deleted`);
     persons = filteredPersons;
     savePersons(persons);
-    return;
-  }
-
-  if (deletedPerson.length <= 0) {
+  } else if (deletedPerson.length <= 0) {
     res.status(404).send(`${nameReq} person not found`);
-    return;
   }
-
-  res.status(400).send(`<h1>400</h1><br /> <p>Bad request</p>`);
 });
 
 
