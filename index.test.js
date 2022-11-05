@@ -25,7 +25,7 @@ const bodyData = [                //adds two users because to cover all lines of
 describe("GET to /persons", () => {
   test("/persons returns anything", async () => {
     const response = await request(app).get("/persons");
-    expect(response.text).toEqual(expect.stringContaining(""));
+    expect(response.statusCode).toBe(200)
   });
 
   // test("/persons returns 404 if no one to list", async () => {
