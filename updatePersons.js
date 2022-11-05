@@ -9,7 +9,6 @@ export function savePersons(persons) {
 };
 
 export function syncStart() {
-// function syncStart() {
   let persons = [];
   try {
     let readedFile = fs.readFileSync("./persons.json");

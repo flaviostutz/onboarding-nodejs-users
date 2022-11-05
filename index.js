@@ -40,7 +40,7 @@ app.post("/persons", (req, res) => {
     persons.push(person);
     savePersons(persons);
     res
-      .status(200)
+      .status(201)
       .send(`person <strong>${person.name}</strong> was created successfully`);
   } else if (!isPersonEmpty) {
     res.status(400).send(`your name '${person.name}' should only have letters`);
@@ -69,7 +69,7 @@ app.get("/persons/:name", (req, res) => {
     res.status(200).send(responseByName);
   } else {
     res
-      .status(204)
+      .status(404)
       .send(
         `<h1>204</h1><p>the person: <strong>${nameReq}</strong>, was not found</p>`
       );
@@ -78,8 +78,7 @@ app.get("/persons/:name", (req, res) => {
 });
 
 app.put("/persons/:name", (req, res) => {
-  const { query } = req;
-  const queryExists = Object.keys(query).length > 0
+  const { body } = req;
   const nameReq = req.params.name;
   function personExist() {
     let namef = persons.filter((person) => person.name === nameReq);
@@ -91,19 +90,17 @@ app.put("/persons/:name", (req, res) => {
   }
   let exist = personExist();
 
-  if (exist && queryExists) {
+  if (exist && body) {
     let update = persons.map((person) => {
       if (person.name === nameReq) {
-        let updatedPerson = { ...person, ...query };
+        let updatedPerson = { ...person, ...body };
         return updatedPerson;
       } else {
         return person;
       }
     });
     persons = update;
-    res.status(202).send(`${nameReq} updated successfully`);
-  } else if (exist) {
-    res.status(400).send(`bad <strong>query</strong> request`);
+    res.status(200).send(`${nameReq} updated successfully`);
   } else {
     res.status(404).send(`${nameReq} was not find`);
   }
@@ -117,7 +114,7 @@ app.delete("/persons/:name", (req, res) => {
   const filteredPersons = persons.filter((person) => person.name !== nameReq);
 
   if (deletedPerson.length > 0) {
-    res.status(202).send(`user: ${nameReq} was deleted`);
+    res.status(200).send(`user: ${nameReq} was deleted`);
     persons = filteredPersons;
     savePersons(persons);
   } else if (deletedPerson.length <= 0) {
