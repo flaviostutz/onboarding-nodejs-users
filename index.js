@@ -79,28 +79,9 @@ app.get("/persons/:name", (req, res) => {
   }
 });
 
-app.delete("/persons/:name", (req, res) => {
-  const nameReq = req.params.name || "";
-  const deletedPerson = persons.filter((person) => person.name === nameReq);
-  const filteredPersons = persons.filter((person) => person.name !== nameReq);
-
-  if (deletedPerson.length > 0) {
-    res.status(202).send(`user: ${nameReq} was deleted`);
-    persons = filteredPersons;
-    savePersons(persons);
-    return;
-  }
-
-  if (deletedPerson.length <= 0) {
-    res.status(204).send(`${nameReq} person not found`);
-    return;
-  }
-
-  res.status(400).send(`<h1>400</h1><br /> <p>Bad request</p>`);
-});
-
 app.put("/persons/:name", (req, res) => {
   const { query } = req;
+  const queryExists = Object.keys(query).length > 0
   const nameReq = req.params.name;
   function personExist() {
     let namef = persons.filter((person) => person.name === nameReq);
@@ -112,7 +93,7 @@ app.put("/persons/:name", (req, res) => {
   }
   let exist = personExist();
 
-  if (exist && query) {
+  if (exist && queryExists) {
     let update = persons.map((person) => {
       if (person.name === nameReq) {
         let updatedPerson = { ...person, ...query };
@@ -131,6 +112,27 @@ app.put("/persons/:name", (req, res) => {
   savePersons(persons);
   res.end();
 });
+
+app.delete("/persons/:name", (req, res) => {
+  const nameReq = req.params.name || "";
+  const deletedPerson = persons.filter((person) => person.name === nameReq);
+  const filteredPersons = persons.filter((person) => person.name !== nameReq);
+
+  if (deletedPerson.length > 0) {
+    res.status(202).send(`user: ${nameReq} was deleted`);
+    persons = filteredPersons;
+    savePersons(persons);
+    return;
+  }
+
+  if (deletedPerson.length <= 0) {
+    res.status(404).send(`${nameReq} person not found`);
+    return;
+  }
+
+  res.status(400).send(`<h1>400</h1><br /> <p>Bad request</p>`);
+});
+
 
 app.listen(8080, () => console.log("listening on port 8080"));
 
