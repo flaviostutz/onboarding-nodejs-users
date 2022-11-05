@@ -11,6 +11,17 @@ import app from "./index.js";
  *   full command: "NODE_OPTIONS=--experimental-vm-modules npx jest --runInBand"
  */
 
+const bodyData = [                //adds two users because to cover all lines of testing 
+{
+  name: "userTest",
+  height: 180,
+},
+{
+  name: "userTester",
+  height: 180,
+},
+];
+
 describe("GET to /persons", () => {
   test("/persons returns anything", async () => {
     const response = await request(app).get("/persons");
@@ -35,11 +46,10 @@ describe("POST to /persons", () => {
     });
 
     test("Accept if user and height is valid", async () => {
-      const response = await request(app).post("/persons").send({
-        name: "userTest",
-        height: "180",
-      });
-      expect(response.statusCode).toBe(201);
+      for (const body of bodyData) {
+        const response = await request(app).post("/persons").send(body);
+        expect(response.statusCode).toBe(201);
+      }
     });
 
     test("Check if user has more than 4 characteres", async () => {
@@ -114,7 +124,10 @@ describe("DELETE to /persons", () => {
   });
 
   test("Deleting a existent user is possible", async () => {
-    const response = await request(app).delete("/persons/userTest"); // Only works if run the POST test
-    expect(response.statusCode).toBe(200);                           // or --runInBand
+    for (const body of bodyData) {
+      const response = await request(app).delete(`/persons/${body.name}`);
+      expect(response.statusCode).toBe(200);
+
+    }
   });
 });
