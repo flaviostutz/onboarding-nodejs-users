@@ -1,38 +1,37 @@
+import jest from "jest-mock";
 import request from "supertest";
 import app from "./index.js";
 
 /*
- *   This test  needs to run fully
- *   it creates a user to test, without the
- *   userTest all the non-POST request will fail
+ *   This test needs to run fully
+ *   it creates two users to test, those users
+ *   are added to the database and deleted when
+ *   the tests ends.
+ *   without it all the non-POST request will fail
  *   also recommended to run using --runInBand
  *   since it's using node modules you will probably need
  *   to run with experimenta-vm-modules
  *   full command: "NODE_OPTIONS=--experimental-vm-modules npx jest --runInBand"
  */
 
-const bodyData = [                //adds two users because to cover all lines of testing 
-{
-  name: "userTest",
-  height: 180,
-},
-{
-  name: "userTester",
-  height: 180,
-},
+
+const bodyData = [
+  //adds two users because to cover all lines of testing
+  {
+    name: "userTest",
+    height: 180,
+  },
+  {
+    name: "userTester",
+    height: 180,
+  },
 ];
 
 describe("GET to /persons", () => {
-  test("/persons returns anything", async () => {
+  test("/persons return a list of persons", async () => {
     const response = await request(app).get("/persons");
-    expect(response.statusCode).toBe(200)
+    expect(response.statusCode).toBe(200);
   });
-
-  // test("/persons returns 404 if no one to list", async () => {
-  //     isPersonsEmpty = true
-  //     const response = await request(app).get("/persons")
-  //     expect(response.statusCode).toBe(404)
-  // })
 });
 
 describe("POST to /persons", () => {
@@ -127,7 +126,6 @@ describe("DELETE to /persons", () => {
     for (const body of bodyData) {
       const response = await request(app).delete(`/persons/${body.name}`);
       expect(response.statusCode).toBe(200);
-
     }
   });
 });

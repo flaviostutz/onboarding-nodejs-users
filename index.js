@@ -1,12 +1,9 @@
-// const express = require("express");
-// const updatePersons = require("./updatePersons");
 import express from "express";
 import { savePersons, syncStart } from "./updatePersons.js";
 const app = express();
 
 app.use(express.json());
 
-// let persons = updatePersons.syncStart();
 let persons = syncStart();
 
 app.post("/persons", (req, res) => {
@@ -49,18 +46,12 @@ app.post("/persons", (req, res) => {
 });
 
 app.get("/persons", (req, res) => {
-  const isPersonsEmpty = persons.length === 0;
-  if (isPersonsEmpty) {
-    res.status(404).send(`<h1>404</h1><p>there's <strong>no one</strong>`);
-  } else {
     res.status(200).send(persons);
-  }
 });
 
 app.get("/persons/:name", (req, res) => {
   const nameReq = req.params.name;
   const finded = persons.find((person) => person.name === nameReq);
-  console.log(finded);
 
   let responseByName;
 
