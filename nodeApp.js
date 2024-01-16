@@ -1,13 +1,12 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const fs = require('fs');
-const saveDataToFile = require('./saveData');
+const { saveDataToFile } = require('./saveData');
 
 const app = express();
 const port = 3000;
 
 app.use(bodyParser.json());
-
 let people = [];
 
 //Load data from file if it exists
@@ -99,19 +98,10 @@ app.delete('/people/:name', (req, res) => {
 
 // Close the server and save data to file before shutting down the server
 process.on('SIGINT', () => {
-  saveDataToFile(); // utility function imported from ./saveData.js
+  saveDataToFile(people); // utility function imported from ./saveData.js
+  process.exit();
 });
 
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
 });
-
-
-
-
-
-
-
-
-
-

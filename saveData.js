@@ -1,9 +1,10 @@
 const fs = require('fs');
 
-// Save data to file before shutting down the server
-function saveDataToFile() {
-  const data = JSON.stringify(people);
-  fs.writeFileSync(dataFilePath, data, 'utf-8');
+const dataFilePath = 'peopleList.json';
+
+function saveDataToFile(data) {
+  const jsonData = JSON.stringify(data);
+  fs.writeFileSync(dataFilePath, jsonData, 'utf-8');
 }
 
-exports.module = saveDataToFile;
+module.exports = { saveDataToFile };
