@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const fs = require('fs');
+const saveDataToFile = require('./saveData');
 
 const app = express();
 const port = 3000;
@@ -96,16 +97,9 @@ app.delete('/people/:name', (req, res) => {
   res.json({ message: 'Person deleted successfully.' });
 });
 
-// Save data to file before shutting down the server
-function saveDataToFile() {
-  const data = JSON.stringify(people);
-  fs.writeFileSync(dataFilePath, data, 'utf-8');
-}
-
 // Close the server and save data to file before shutting down the server
 process.on('SIGINT', () => {
-  saveDataToFile();
-  process.exit();
+  saveDataToFile(); // utility function imported from ./saveData.js
 });
 
 app.listen(port, () => {
