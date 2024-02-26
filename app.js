@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const Joi = require('joi');
 var fs =require('fs');
+const data = require('./lib/data')
 
 const app = express();
 app.use(bodyParser.json());
@@ -29,7 +30,7 @@ app.post('/person', (req, res) => {
         hair: req.body.hair
       };
       persons.push(newPerson)
-      writeFile(persons)
+      data.writeFile(persons)
     res.status(201).json(req.body);
 });
 
@@ -43,14 +44,6 @@ function validatePerson(person) {
     return validation;
 }
 
-function writeFile(persons) {
-    fs.writeFile('persons.txt', JSON.stringify(persons), (err) => {
-        if(err){
-            console.log(err)
-            res.status(500).send({error: 'Error writing file!'})
-        }
-      })
-}
 
 app.delete('/person/:name', (req,res) => {
     const person = persons.filter(c => c.name === req.params.name)
