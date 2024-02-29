@@ -6,7 +6,7 @@ test('Reading data from file', () => {
     const readMe = 'persons.json'
     const testData = fs.readFileSync(readMe, 'utf-8')
     const expectedData = JSON.parse(testData)
-    expect(persons).toEqual(expectedData)
+    expect(expectedData).toStrictEqual(persons)
 })
 
 test('Saving data to file', () => {
@@ -15,6 +15,5 @@ test('Saving data to file', () => {
     fs.writeFileSync(readMe2, JSON.stringify(persons2, null, 2), 'utf-8');
     const fileData = fs.readFileSync(readMe2, 'utf-8')
     const parsedData = JSON.parse(fileData)
-    const testPersons = JSON.stringify(persons, null, 2)
     expect(parsedData).toEqual(persons2)
 })
