@@ -1,5 +1,5 @@
-
-coverage/
+/coverage/
+/node_modules/
 persons.json
 persons2.json
-fileOperations.test
+fileOperations.test.js
