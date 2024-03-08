@@ -1,30 +1,15 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const fs = require('fs');
+const {persons, saveDataToFile} = require('./fileOperations.js');
 
 const server = express();
 
 server.use(bodyParser.json());
 
 const readMe = 'persons.json';
-let persons = [];
+//let persons = []; 
 
 
-try {
-    const data = fs.readFileSync(readMe, 'utf-8');
-    persons = JSON.parse(data);
-} catch (err) {
-    console.log('Error loading data file. Starting with an empty array.');
-}
-
-const saveDataToFile = () => {
-    try {
-        fs.writeFileSync(readMe, JSON.stringify(persons, null, 2), 'utf-8');
-        console.log('Data saved to file.');
-    } catch (err) {
-        console.error('Error saving data to file:', err);
-    }
-};
 
 const validatePerson = (req, res, next) => {
     const { name, height } = req.body 
@@ -91,6 +76,6 @@ server.delete('/persons/:name', (req, res) => {
     }
 });
 
-server.listen(8888, () => {
+server.listen(8892, () => {
     console.log('Servidor Funcionando!');
 });
